@@ -11,7 +11,7 @@
 - 信息不足时使用明确占位符，只在关键条件缺失时提问
 - 根据任务复杂度提供快速、标准和专业三种输出模式
 - 可针对研究、方案、对比、编程、学习、图片、视频和文案任务生成不同结构
-- 支持 ChatGPT 与 Codex 的显式调用和自动触发
+- 支持 ChatGPT、Codex 及多种主流 Agent Skills 平台的显式调用和自动触发
 
 ## 适用场景
 
@@ -44,6 +44,170 @@ $skill-installer 请从 https://github.com/shai20040210-dot/AI-Prompting-Skills 
 - 当前项目：`<项目目录>/.agents/skills/craft-ai-prompts`
 
 请保持 `SKILL.md`、`references/`、`agents/` 和 `assets/` 的相对位置不变。
+
+## 其他主流智能体部署
+
+> 以下流程基于各平台在 2026-08-24 发布的官方 Agent Skills 文档。所有安装方式都必须保留仓库的完整目录，并确保安装后的文件夹名为 `craft-ai-prompts`。
+
+### 跨平台共享安装（推荐）
+
+Codex、Cursor、Gemini CLI、GitHub Copilot、OpenCode 和 Windsurf/Devin Desktop 均可识别通用的 `.agents/skills/` 目录。一份安装即可被这些智能体共同发现。
+
+**macOS / Linux / WSL：**
+
+```bash
+mkdir -p ~/.agents/skills
+git clone https://github.com/shai20040210-dot/AI-Prompting-Skills.git ~/.agents/skills/craft-ai-prompts
+```
+
+**Windows PowerShell：**
+
+```powershell
+New-Item -ItemType Directory -Force "$HOME\.agents\skills" | Out-Null
+git clone https://github.com/shai20040210-dot/AI-Prompting-Skills.git "$HOME\.agents\skills\craft-ai-prompts"
+```
+
+如目录已存在，使用下面的命令更新：
+
+```bash
+git -C ~/.agents/skills/craft-ai-prompts pull
+```
+
+### 兼容性速查
+
+| 智能体 | 推荐安装位置或方式 | 显式调用 |
+| --- | --- | --- |
+| Claude Code | `~/.claude/skills/craft-ai-prompts` | `/craft-ai-prompts` |
+| Cursor | GitHub Remote Rule，或 `~/.cursor/skills/craft-ai-prompts` | `/craft-ai-prompts` |
+| Gemini CLI | `gemini skills install <仓库地址>` | 描述任务，由 Gemini 激活 Skill |
+| GitHub Copilot | `gh skill install`，或 `~/.copilot/skills/craft-ai-prompts` | 在提示中使用 `/craft-ai-prompts` |
+| OpenCode | `~/.config/opencode/skills/craft-ai-prompts` | 描述任务，由 Agent 的 `skill` 工具加载 |
+| Cline | `~/.cline/skills/craft-ai-prompts` | `/craft-ai-prompts` |
+| Windsurf / Devin Desktop | `~/.codeium/windsurf/skills/craft-ai-prompts` | `@craft-ai-prompts` |
+
+### Claude Code
+
+个人全局安装：
+
+```bash
+mkdir -p ~/.claude/skills
+git clone https://github.com/shai20040210-dot/AI-Prompting-Skills.git ~/.claude/skills/craft-ai-prompts
+```
+
+仅在当前项目使用时，安装到：
+
+```text
+<项目目录>/.claude/skills/craft-ai-prompts
+```
+
+安装后输入 `/craft-ai-prompts` 显式调用，也可以直接描述需求让 Claude 自动匹配。如果是在 Claude Code 已运行后第一次创建顶层 `skills` 目录，请重新启动当前会话。
+
+官方文档：[Claude Code Skills](https://code.claude.com/docs/en/skills)
+
+### Cursor
+
+推荐使用 Cursor 内置的 GitHub 导入流程：
+
+1. 打开侧边栏 **Customize**。
+2. 进入 **Rules**，点击 **Add Rule**。
+3. 选择 **Remote Rule (Github)**。
+4. 输入 `https://github.com/shai20040210-dot/AI-Prompting-Skills`。
+5. 在 **Customize → Skills** 中确认已发现 `craft-ai-prompts`。
+
+也可以手动放到项目目录 `.cursor/skills/craft-ai-prompts`，或个人目录 `~/.cursor/skills/craft-ai-prompts`。输入 `/craft-ai-prompts` 即可显式调用。
+
+官方文档：[Cursor Agent Skills](https://cursor.com/docs/skills)
+
+### Gemini CLI
+
+安装到个人范围：
+
+```bash
+gemini skills install https://github.com/shai20040210-dot/AI-Prompting-Skills
+```
+
+仅安装到当前工作区：
+
+```bash
+gemini skills install https://github.com/shai20040210-dot/AI-Prompting-Skills --scope workspace
+```
+
+验证与刷新：
+
+```bash
+gemini skills list --all
+```
+
+在 Gemini CLI 会话内可使用 `/skills list` 查看，使用 `/skills reload` 重新扫描。安装远程 Skill 时会要求确认来源，Skill 被激活时也可能再次请求授权。
+
+官方文档：[Gemini CLI Agent Skills](https://geminicli.com/docs/cli/skills/)
+
+### GitHub Copilot
+
+使用 GitHub CLI 2.90.0 或更高版本时，可先预览再安装：
+
+```bash
+gh skill preview shai20040210-dot/AI-Prompting-Skills craft-ai-prompts
+gh skill install shai20040210-dot/AI-Prompting-Skills craft-ai-prompts --scope user
+```
+
+手动安装时，可将仓库放到：
+
+- 项目范围：`.github/skills/craft-ai-prompts`
+- 个人范围：`~/.copilot/skills/craft-ai-prompts`
+
+在 Copilot CLI 中执行 `/skills reload` 后，用 `/skills info craft-ai-prompts` 验证。调用示例：
+
+```text
+Use the /craft-ai-prompts skill to turn my rough idea into a professional AI prompt.
+```
+
+官方文档：[GitHub Copilot Agent Skills](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/add-skills)
+
+### OpenCode
+
+个人全局安装：
+
+```bash
+mkdir -p ~/.config/opencode/skills
+git clone https://github.com/shai20040210-dot/AI-Prompting-Skills.git ~/.config/opencode/skills/craft-ai-prompts
+```
+
+当前项目安装位置为 `.opencode/skills/craft-ai-prompts`。OpenCode 会把 Skill 加入原生 `skill` 工具的可用列表；直接描述“把这个需求整理成专业 AI 提示词”，Agent 会在相关时自动加载。
+
+官方文档：[OpenCode Agent Skills](https://opencode.ai/docs/skills/)
+
+### Cline
+
+将仓库安装到以下任一位置：
+
+- 项目范围：`.cline/skills/craft-ai-prompts`
+- macOS / Linux 全局：`~/.cline/skills/craft-ai-prompts`
+- Windows 全局：`C:\Users\<用户名>\.cline\skills\craft-ai-prompts`
+
+安装后打开 Cline 面板底部的 **Skills** 菜单，确认该 Skill 已启用。输入 `/craft-ai-prompts` 可强制调用，也可以直接描述任务让 Cline 自动匹配。
+
+官方文档：[Cline Skills](https://docs.cline.bot/customization/skills)
+
+### Windsurf / Devin Desktop
+
+将仓库安装到：
+
+- 当前工作区：`.windsurf/skills/craft-ai-prompts`
+- 个人全局：`~/.codeium/windsurf/skills/craft-ai-prompts`
+
+也可以打开 Cascade 面板右上角菜单，进入 **Customizations → Skills** 查看和管理。输入 `@craft-ai-prompts` 显式调用，或直接描述任务自动触发。
+
+Devin Desktop 还会识别通用的 `.agents/skills/` 与 `~/.agents/skills/` 目录，因此可直接使用前面的跨平台共享安装方案。
+
+官方文档：[Windsurf / Devin Desktop Skills](https://docs.devin.ai/desktop/cascade/skills)
+
+### 兼容说明
+
+- 核心能力位于 `SKILL.md` 和 `references/prompt-patterns.md`，符合通用 Agent Skills 目录结构。
+- `agents/openai.yaml` 主要用于 OpenAI 产品的界面显示；其他智能体即使忽略它，也不影响 Skill 的核心能力。
+- 当前版本不包含可执行脚本，安装内容只有说明、模板、配置和图标。
+- 如果目标智能体只支持 Rules、Commands 或 `AGENTS.md`，但不支持 Agent Skills，则不能仅靠复制本仓库完成原生安装，需要先转换格式。
 
 ## 使用方法
 
@@ -141,6 +305,13 @@ AI-Prompting-Skills/
 ## 参考
 
 - [OpenAI：Build skills](https://learn.chatgpt.com/docs/build-skills)
+- [Claude Code：Skills](https://code.claude.com/docs/en/skills)
+- [Cursor：Agent Skills](https://cursor.com/docs/skills)
+- [Gemini CLI：Agent Skills](https://geminicli.com/docs/cli/skills/)
+- [GitHub Copilot：Agent Skills](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/add-skills)
+- [OpenCode：Agent Skills](https://opencode.ai/docs/skills/)
+- [Cline：Skills](https://docs.cline.bot/customization/skills)
+- [Windsurf / Devin Desktop：Skills](https://docs.devin.ai/desktop/cascade/skills)
 - [Skill 核心说明](./SKILL.md)
 - [完整提问模板库](./references/prompt-patterns.md)
 
