@@ -84,6 +84,8 @@ git -C ~/.agents/skills/craft-ai-prompts pull
 | OpenCode | `~/.config/opencode/skills/craft-ai-prompts` | 描述任务，由 Agent 的 `skill` 工具加载 |
 | Cline | `~/.cline/skills/craft-ai-prompts` | `/craft-ai-prompts` |
 | Windsurf / Devin Desktop | `~/.codeium/windsurf/skills/craft-ai-prompts` | `@craft-ai-prompts` |
+| WorkBuddy（腾讯） | 客户端 **技能 → 添加技能 → 上传技能** | 自然语言指定 `craft-ai-prompts` |
+| TRAE（TraeCode / TraeWork） | `.trae/skills`、`.trae-cn/skills` 或上传 ZIP | `/craft-ai-prompts` 或自然语言指定 |
 
 ### Claude Code
 
@@ -202,6 +204,96 @@ Devin Desktop 还会识别通用的 `.agents/skills/` 与 `~/.agents/skills/` �
 
 官方文档：[Windsurf / Devin Desktop Skills](https://docs.devin.ai/desktop/cascade/skills)
 
+### WorkBuddy（腾讯）
+
+WorkBuddy 主要通过客户端界面导入本地技能包，不建议直接套用 `.agents/skills/` 路径。
+
+先将仓库打包为 ZIP，并确保 ZIP 根目录直接包含 `SKILL.md`：
+
+**macOS / Linux / WSL：**
+
+```bash
+git clone https://github.com/shai20040210-dot/AI-Prompting-Skills.git craft-ai-prompts
+cd craft-ai-prompts
+zip -r ../craft-ai-prompts.zip SKILL.md agents assets references README.md LICENSE
+```
+
+**Windows PowerShell：**
+
+```powershell
+git clone https://github.com/shai20040210-dot/AI-Prompting-Skills.git craft-ai-prompts
+Compress-Archive -Path ".\craft-ai-prompts\*" -DestinationPath ".\craft-ai-prompts.zip" -Force
+```
+
+在 WorkBuddy 中安装：
+
+1. 打开客户端的 **技能** 页面。
+2. 点击 **添加技能**。
+3. 选择 **上传技能**，上传 `craft-ai-prompts.zip`。
+4. 安装完成后进入 **已安装**，确认 `craft-ai-prompts` 已启用。
+5. 在任意任务中直接用自然语言触发。
+
+测试示例：
+
+```text
+使用 craft-ai-prompts，把下面这个模糊需求整理成一条可直接复制的专业 AI 提问词：
+我想做一个面向短剧制作的 AI 视频工作流。
+```
+
+WorkBuddy 也支持在对话中描述能力需求，让智能体查找或创建 Skill；从本仓库安装时，上传经过检查的本地 ZIP 更便于确认实际内容。
+
+官方文档：[WorkBuddy 技能](https://www.workbuddy.ai/docs/zh/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market) · [创建自己的 Skills](https://www.workbuddy.ai/docs/zh/workbuddy/From-Beginner-to-Expert-Guide/Practice-Cases/Create-Skills)
+
+### TRAE（TraeCode / TraeWork）
+
+TRAE 原生支持包含 `SKILL.md` 的 Agent Skill，但 TraeCode/IDE 与 TraeWork 国内版的全局目录不同。
+
+#### TraeCode / TRAE IDE
+
+项目范围安装位置：
+
+```text
+<项目目录>/.trae/skills/craft-ai-prompts
+```
+
+macOS / Linux 全局安装：
+
+```bash
+mkdir -p ~/.trae/skills
+git clone https://github.com/shai20040210-dot/AI-Prompting-Skills.git ~/.trae/skills/craft-ai-prompts
+```
+
+Windows PowerShell 全局安装：
+
+```powershell
+New-Item -ItemType Directory -Force "$HOME\.trae\skills" | Out-Null
+git clone https://github.com/shai20040210-dot/AI-Prompting-Skills.git "$HOME\.trae\skills\craft-ai-prompts"
+```
+
+#### TraeWork 国内版
+
+TraeWork 的技能目录为：
+
+- 项目范围：`<项目目录>/.trae/skills/craft-ai-prompts`
+- macOS / Linux 全局：`~/.trae-cn/skills/craft-ai-prompts`
+- Windows 全局：`%USERPROFILE%\.trae-cn\skills\craft-ai-prompts`
+
+也可以使用前面生成的 `craft-ai-prompts.zip` 通过界面安装：
+
+1. 打开左侧 **插件市场**。
+2. 进入 **技能** 页签。
+3. 点击右上角 **上传技能**。
+4. 上传 ZIP 文件并确认。
+5. 在 **已安装** 页签确认 Skill 已启用。
+
+#### 在 TRAE 中调用
+
+- 在对话框输入 `/`，从列表选择 `craft-ai-prompts`。
+- 直接输入“使用 craft-ai-prompts 把下面需求整理成专业提问词”。
+- 也可以直接描述需求，由 TRAE 根据 `description` 自动调用。
+
+官方文档：[TRAE IDE Skills](https://docs.trae.ai/ide/skills?_lang=zh) · [TraeWork 技能](https://docs.trae.cn/work_skills)
+
 ### 兼容说明
 
 - 核心能力位于 `SKILL.md` 和 `references/prompt-patterns.md`，符合通用 Agent Skills 目录结构。
@@ -312,6 +404,9 @@ AI-Prompting-Skills/
 - [OpenCode：Agent Skills](https://opencode.ai/docs/skills/)
 - [Cline：Skills](https://docs.cline.bot/customization/skills)
 - [Windsurf / Devin Desktop：Skills](https://docs.devin.ai/desktop/cascade/skills)
+- [WorkBuddy：技能](https://www.workbuddy.ai/docs/zh/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market)
+- [TRAE IDE：Skills](https://docs.trae.ai/ide/skills?_lang=zh)
+- [TraeWork：技能](https://docs.trae.cn/work_skills)
 - [Skill 核心说明](./SKILL.md)
 - [完整提问模板库](./references/prompt-patterns.md)
 
